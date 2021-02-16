@@ -22,7 +22,7 @@ public class HeadersOffCommand extends ObdProtocolCommand {
      * <p>Constructor for HeadersOffCommand.</p>
      */
     public HeadersOffCommand() {
-        super("ATH0");
+        super("AT H0");
     }
 
     /**

@@ -52,7 +52,7 @@ public abstract class ObdCommand {
      * @param command the command to send
      */
     public ObdCommand(String command) {
-        this.cmd = command;
+        this.cmd = command.replaceAll("\\s", "");
         this.buffer = new ArrayList<>();
     }
 
@@ -103,8 +103,7 @@ public abstract class ObdCommand {
      */
     protected void sendCommand(OutputStream out) throws IOException,
             InterruptedException {
-        // write to OutputStream (i.e.: a BluetoothSocket) with an added
-        // Carriage return
+        // write to OutputStream (i.e.: a BluetoothSocket) with an added Carriage return
         out.write((cmd + "\r").getBytes());
         out.flush();
         if (responseDelayInMs != null && responseDelayInMs > 0) {
@@ -229,15 +228,17 @@ public abstract class ObdCommand {
 
     void checkForErrors() {
         for (Class<? extends ResponseException> errorClass : ERROR_CLASSES) {
-            ResponseException messageError;
+            ResponseException messageError = null;
 
             try {
                 messageError = errorClass.newInstance();
                 messageError.setCommand(this.cmd);
             } catch (InstantiationException e) {
-                throw new RuntimeException(e);
+                //throw new RuntimeException(e);
+                e.printStackTrace();
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                //throw new RuntimeException(e);
+                e.printStackTrace();
             }
 
             if (messageError.isError(rawData)) {
